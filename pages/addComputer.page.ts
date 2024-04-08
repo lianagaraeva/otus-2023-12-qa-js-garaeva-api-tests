@@ -1,19 +1,16 @@
-import { expect, type Locator, type Page } from '@playwright/test'
-import ComputerForm from '../sections/ComputerForm'
+import { type Locator, type Page } from '@playwright/test'
+import ComputerForm from './computerForm.page'
 
+// Добавление компьютера
 export default class AddComputerPage {
   readonly page: Page
   readonly addComputerButton: Locator
-  computerForm: ComputerForm
+  readonly computerForm: ComputerForm
 
   constructor(page: Page) {
     this.page = page
     this.computerForm = new ComputerForm(this.page)
-    this.addComputerButton = page.getByText('Add a new computer')
-  }
-
-  async goto() {
-    await this.page.goto('https://computer-database.gatling.io/computers')
+    this.addComputerButton = page.locator('#add.btn.success')
   }
 
   async clickAddNewComputer() {

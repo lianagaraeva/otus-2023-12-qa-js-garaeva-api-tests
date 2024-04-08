@@ -8,45 +8,44 @@ test.describe('Проверка базы компьютеров', async () => {
     const computersPage = new ComputersPage(page)
     const addComputerPage = new AddComputerPage(page)
     await computersPage.goto()
-    await computersPage.clickAddNewComputer()
+    await addComputerPage.clickAddNewComputer()
     await addComputerPage.addNewComputer()
     await computersPage.assertNewComputerAdded()
   })
 
-  test('Просмотр карточки компьютера', async ({ page }) => {
+  test('Редактирование компьютера', async ({ page }) => {
     const computersPage = new ComputersPage(page)
     const getComputerPage = new GetComputerPage(page)
     await computersPage.goto()
     await getComputerPage.clickComputerASCIPurple()
-    await getComputerPage.getComputerForm()
+    await getComputerPage.updateComputer()
+    await getComputerPage.assertComputerUpdated()
   })
 
-  test('Редактирование карточки компьютера', async ({ page }) => {
+  test('Удаление компьютера', async ({ page }) => {
     const computersPage = new ComputersPage(page)
     const getComputerPage = new GetComputerPage(page)
     await computersPage.goto()
     await getComputerPage.clickComputerARRA()
-    await getComputerPage.enterComputerForm()
-    await getComputerPage.updateComputer()
-    await getComputerPage.assertComputerUpdated()
+    await getComputerPage.deleteComputer()
+    await getComputerPage.assertComputerDeleted()
   })
 
   test('Изменение списка отображаемых компьютеров', async ({ page }) => {
     const computersPage = new ComputersPage(page)
     await computersPage.goto()
-    await computersPage.display1()
+    await computersPage.checkOneToTenVisible()
     await computersPage.clickButtonNext()
-    await computersPage.display2()
+    await computersPage.checkElevenToTwentyVisible()
     await computersPage.clickButtonPrevious()
-    await computersPage.display1()
+    await computersPage.checkOneToTenVisible()
   })
 
   test('Поиск компьютера по названию', async ({ page }) => {
     const computersPage = new ComputersPage(page)
     await computersPage.goto()
+    await computersPage.computerInvisible()
     await computersPage.search()
-    await computersPage.clickButtonFilterByName()
-    await computersPage.found()
-    await computersPage.title()
+    await computersPage.computerFound()
   })
 })
