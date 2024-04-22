@@ -20,23 +20,23 @@ export default class ComputerForm {
     )
   }
 
-  async enterComputerForm() {
-    await this.nameInput.fill('MyFirstComputer')
-    await this.introducedInput.fill('1999-04-04')
-    await this.discontinuedInput.fill('2002-12-31')
-    await this.companySelect.selectOption({ label: 'Apple Inc.' })
+  async enterComputerForm({ name, introduced, discontinued, company }) {
+    await this.nameInput.fill(name)
+    await this.introducedInput.fill(introduced)
+    await this.discontinuedInput.fill(discontinued)
+    await this.companySelect.selectOption({ label: company })
   }
   async createComputer() {
     await this.createThisComputerButton.click()
   }
-  async checkComputerASCIPurple() {
-    await expect(this.nameInput).toHaveValue(/ASCI Purple/)
-    await expect(this.introducedInput).toHaveValue(/2005-01-01/)
-    await expect(this.companySelect).toHaveText(/IBM/)
+  async checkComputer({ name, introduced, company }) {
+    await expect(this.nameInput).toHaveValue(name)
+    await expect(this.introducedInput).toHaveValue(introduced)
+    await expect(this.companySelect).toHaveText(company)
   }
-  async editComputerForm() {
-    await this.introducedInput.fill('2000-04-07')
-    await this.discontinuedInput.fill('2004-12-30')
-    await this.companySelect.selectOption({ label: 'RCA' })
+  async editComputerForm({ introduced, discontinued, company }) {
+    await this.introducedInput.fill(introduced)
+    await this.discontinuedInput.fill(discontinued)
+    await this.companySelect.selectOption({ label: company })
   }
 }

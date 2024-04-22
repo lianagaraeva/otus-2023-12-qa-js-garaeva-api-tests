@@ -1,8 +1,5 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 
-const displayingOneToTen = 'Displaying 1 to 10 of 574'
-const displayingElevenToTwenty = 'Displaying 11 to 20 of 574'
-
 // Взаимодействие с элементами на странице computers:
 // поиск, переход по страницам, отображение сообщений
 export default class ComputersPage {
@@ -12,9 +9,7 @@ export default class ComputersPage {
   readonly buttonPrevious: Locator
   readonly searchBox: Locator
   readonly searchSubmit: Locator
-  readonly foundComputer: Locator
   readonly titleComputerFound: Locator
-  readonly displayingText: (text) => Locator
 
   constructor(page: Page) {
     this.page = page
@@ -23,12 +18,11 @@ export default class ComputersPage {
       .getByText('Computer MyFirstComputer has been created')
     this.buttonNext = page.locator('.next>a')
     this.buttonPrevious = page.locator('.prev>a')
-    this.displayingText = (text) => page.locator('.current>a').getByText(text)
     this.searchBox = page.locator('#searchbox')
     this.searchSubmit = page.locator('#searchsubmit')
-    this.foundComputer = page.getByText('Belle')
+
     this.titleComputerFound = page
-      .locator('#main>h1')
+      .locator('#main > h1')
       .getByText('One computer found')
   }
 
@@ -36,7 +30,7 @@ export default class ComputersPage {
     await this.page.goto('https://computer-database.gatling.io/computers')
   }
 
-  async assertNewComputerAdded() {
+  async assertNewComputerAdded(text) {
     await expect(this.computerAddedLabel).toBeVisible()
   }
   async clickButtonNext() {
@@ -45,28 +39,24 @@ export default class ComputersPage {
   async clickButtonPrevious() {
     await this.buttonPrevious.click()
   }
-  /**
-   * Проверка отображения первого по десятый компьютер
-   */
-  async checkOneToTenVisible() {
-    await expect(this.displayingText(displayingOneToTen)).toBeVisible()
-  }
+  #displayingText = (text) => this.page.locator('.current>a').getByText(text)
 
   /**
-   * Проверка отображения одиннадцатого по двадцатый компьютер
+   * Проверка отображения текста пагинации
    */
-  async checkElevenToTwentyVisible() {
-    await expect(this.displayingText(displayingElevenToTwenty)).toBeVisible()
+  async checkPaginationTextVisible(text) {
+    await expect(this.#displayingText(text)).toBeVisible()
   }
-  async computerInvisible() {
-    await expect(this.foundComputer).not.toBeVisible()
+
+  async computerInvisible(computerName) {
+    await expect(this.page.getByText(computerName)).not.toBeVisible()
   }
-  async search() {
-    await this.searchBox.fill('Belle')
+  async search(computerName) {
+    await this.searchBox.fill(computerName)
     await this.searchSubmit.click()
   }
-  async computerFound() {
-    await expect(this.foundComputer).toBeVisible()
+  async computerFound(computerName) {
+    await expect(this.page.getByText(computerName)).toBeVisible()
     await expect(this.titleComputerFound).toBeVisible()
   }
 }

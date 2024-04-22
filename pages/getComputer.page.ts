@@ -1,5 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 import ComputerForm from './computerForm.page'
+import { text } from 'stream/consumers'
 
 // Форма просмотра/редактирования компьютера
 export default class GetComputerPage {
@@ -16,35 +17,36 @@ export default class GetComputerPage {
     this.saveThisComputerButton = page
       .locator('input[type=submit].btn.primary')
       .getByText('Save this computer')
-    this.computerUpdatedLabel = page
-      .locator('.alert-message.warning')
-      .getByText('Computer ASCI Purple has been updated')
+    this.computerUpdatedLabel = page.locator('.alert-message.warning')
     this.deleteThisComputerButton = page.locator(
       'input[type=submit].btn.danger'
     )
-    this.computerDeletedLabel = page
-      .locator('.alert-message.warning')
-      .getByText('Computer ARRA has been deleted')
+    this.computerDeletedLabel = page.locator('.alert-message.warning')
   }
-  async clickComputerASCIPurple() {
-    await this.page.getByText('ASCI Purple').click()
-  }
-  async clickComputerARRA() {
-    await this.page.getByText('ARRA').click()
+  async clickComputer(computer) {
+    await this.page.getByText(computer).click()
   }
 
   async updateComputer() {
-    await this.computerForm.checkComputerASCIPurple()
-    await this.computerForm.editComputerForm()
+    await this.computerForm.checkComputer({
+      name: /ASCI Purple/,
+      introduced: /2005-01-01/,
+      company: /IBM/,
+    })
+    await this.computerForm.editComputerForm({
+      introduced: '2000-04-07',
+      discontinued: '2004-12-30',
+      company: 'RCA',
+    })
     await this.saveThisComputerButton.click()
   }
-  async assertComputerUpdated() {
+  async assertComputerUpdated(text) {
     await expect(this.computerUpdatedLabel).toBeVisible()
   }
   async deleteComputer() {
     await this.deleteThisComputerButton.click()
   }
-  async assertComputerDeleted() {
+  async assertComputerDeleted(text) {
     await expect(this.computerDeletedLabel).toBeVisible()
   }
 }
